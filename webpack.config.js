@@ -8,7 +8,7 @@ module.exports = {
   devtool: 'inline-source-map',
   mode: 'development',
   entry: {
-    app: './src/app.js'
+    app: './src/index.js'
   },
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -46,7 +46,19 @@ module.exports = {
         },
       },
       {
+        test: /\.(scss|css)$/,
+        use: ['style-loader', {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          }, 'postcss-loader'],
+      },
+      {
         test: /\.css$/,
+        include: [
+          '/src/',
+        ],
         use: ['style-loader', 'css-loader'],
       },
       {
@@ -66,13 +78,24 @@ module.exports = {
       },
       // CSS, PostCSS, and Sass
       {
-        test: /\.(scss|css)$/,
-        use: ['style-loader', {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-            },
-          }, 'postcss-loader'],
+        test: /\.less$/,
+        use: [{
+          loader: 'style-loader',
+        }, {
+          loader: 'css-loader', // translates CSS into CommonJS
+        }, {
+          loader: 'less-loader', // compiles Less to CSS
+          options: {
+           lessOptions: { // 如果使用less-loader@5，请移除 lessOptions 这一级直接配置选项。
+             modifyVars: {
+               'primary-color': '#1DA57A',
+               'link-color': '#1DA57A',
+               'border-radius-base': '2px',
+             },
+             javascriptEnabled: true,
+           },
+         },
+        }],
       },
     ],
   },
