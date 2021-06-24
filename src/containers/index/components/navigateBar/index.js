@@ -10,33 +10,6 @@ class NavigateBar extends React.Component {
     
     constructor(props) {
         super(props);
-        this.state = {
-            productTypes: [{
-                id: 1,
-                typeName: "高端权益"
-            },{
-                id: 2,
-                typeName: "视听娱乐"
-            },{
-                id: 3,
-                typeName: "美食餐饮"
-            },{
-                id: 4,
-                typeName: "生活服务"
-            },{
-                id: 5,
-                typeName: "旅游出行"
-            },{
-                id: 6,
-                typeName: "高端权益"
-            },{
-                id: 7,
-                typeName: "医护健康"
-            },{
-                id: 8,
-                typeName: "高端权益"
-            },]
-        }
     }
 
     render() {

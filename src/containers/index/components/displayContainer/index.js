@@ -2,29 +2,21 @@ import React from 'react';
 import './style.css'
 import { Layout, Col, Row, Pagination } from 'antd';
 import { ProductCard } from '../../../../components/productCard';
+import { withRouter } from 'react-router-dom';
 
 
 const { Content } = Layout;
 
 
 class DisplayContainer extends React.Component {
-
-    /**
-     * 跳转到产品详情页
-     * @param id 产品id
-     */
-    handleClick(id) {
-        if (id) {
-            this.props.history.push("/product/detail/" + id)
-        }
-    }
     
     render() {
-        
+        const RouterProductCard = withRouter(ProductCard);
+
         // 产品列表的Item列表数组
         const ProductsItem = this.props.products.map((product) => (
             <Col span={5}>
-                <ProductCard data={ product } onClick={this.handleClick.bind(this, product.id)}/>
+                <RouterProductCard data={ product } />
             </Col>
         ))
 
