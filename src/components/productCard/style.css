@@ -1,0 +1,12 @@
+.card {
+    /* display: inline-block; */
+}
+
+.card-body {
+    font-size: 1.17em;
+}
+
+.text-color-bold {
+    color: #D9001B;
+    font-weight: 700;
+}

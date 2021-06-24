@@ -1,0 +1,11 @@
+.container{
+    margin-left: 1em;
+    margin-right: 1em;
+    background-color: #fff;
+}
+
+.pagenation-padding {
+    justify-content: center;
+    display: flex;
+    margin-top: 1.4em !important;
+}

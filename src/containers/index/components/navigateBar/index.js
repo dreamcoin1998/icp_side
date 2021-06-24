@@ -39,20 +39,9 @@ class NavigateBar extends React.Component {
         }
     }
 
-    componentDidMount() {
-        // TODO: 调用获取产品分类列表接口
-
-    }
-
-    handleSelect(data) {
-        const { key } = data;
-        // TODO: 调用获取产品分类列表接口
-
-    }
-
     render() {
         // 产品类型的Item列表数组
-        const ProductTypeItem = this.state.productTypes.map((productType) => (
+        const ProductTypeItem = this.props.productTypes.map((productType) => (
             <Item key={String(productType.id)}>{productType.typeName}</Item>
         ))
 
@@ -61,7 +50,7 @@ class NavigateBar extends React.Component {
               mode="inline" 
               defaultOpenKeys={["productTypes"]} 
               defaultSelectedKeys={["productTypes"]}
-              onSelect={this.handleSelect}
+              onSelect={this.props.handleSelect}
             >
                 <SubMenu 
                   icon={ <MenuOutlined /> } 
