@@ -6,6 +6,6 @@
 .pagenation-padding {
     justify-content: center;
     display: flex;
-    margin-top: 1.4em !important;
+    /* margin-top: 1.4em !important; */
     padding-bottom: 1.4em !important;
 }

@@ -1,0 +1,19 @@
+.footer {
+    background-color: #333333 !important;
+}
+
+.footer-left-text {
+    color: white !important;
+    padding-top: 1em;
+}
+
+.footer-bottom-text {
+    justify-content: center;
+    display: flex;
+    padding-top: 1em;
+    color: #fff;
+}
+
+Button:hover {
+    color: #02A7F0 !important;
+}

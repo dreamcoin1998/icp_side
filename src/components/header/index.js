@@ -110,23 +110,27 @@ class TopBar extends React.Component {
             <Header className="header">
                 <Row align="middle">
                     {/* logo */}
+                    <Col xxl={3}></Col>
                     <Col span={4}>
                         <BrowserRouter>
                             <Link to="/">
-                                <img className="background-image" src={logo}></img>
+                                <img style={{width: "123px"}} className="background-image" src={logo}></img>
                             </Link>
                         </BrowserRouter>
                     </Col>
+                    <Col xxl={0} span={3}></Col>
                     {/* 搜索栏 */}
-                    <Col className="search-shape-position" span={10} offset={3}>
+                    <Col className="search-shape-position" span={10}>
                         <BrowserRouter>
                             <RouterSearchProduct />
                         </BrowserRouter>
                     </Col>
+                    <Col xxl={2} span={4}></Col>
                     {/* 用户登录注册交互 */}
-                    <Col span={4} offset={3}>
+                    <Col span={3}>
                         <UserModule></UserModule>
                     </Col>
+                    <Col xxl={4}></Col>
                 </Row>
             </Header>
         );

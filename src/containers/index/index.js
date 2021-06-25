@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import { TopBar } from '../../components/header';
 import { ProductTypied } from './components/productTypied/index.js'
 import { ProductShowList } from '../../components/productShowList/index.js'
+import { FooterArea } from '../../components/footerArea/index.js';
 
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -22,7 +23,7 @@ class IndexPage extends React.Component {
                         isPage={true}
                         isShowTotal={false}
                     />
-                    {/* <Footer>Footer</Footer> */}
+                    <FooterArea></FooterArea>
                 </Layout>
             </div>
         )
