@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import { TopBar } from '../../components/header';
 import { ProductTypied } from './components/productTypied/index.js'
-import { ProductRecomm } from './components/productRecomm/index.js'
+import { ProductShowList } from '../../components/productShowList/index.js'
 
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -15,7 +15,13 @@ class IndexPage extends React.Component {
                 <Layout>
                     <TopBar></TopBar>
                     {/* <ProductTypied></ProductTypied> */}
-                    <ProductRecomm></ProductRecomm>
+                    <ProductShowList
+                        title="为您推荐" 
+                        subTitle="海量资源 实时推荐" 
+                        apiUrl="/v1.0/product/recommond"
+                        isPage={true}
+                        isShowTotal={false}
+                    />
                     {/* <Footer>Footer</Footer> */}
                 </Layout>
             </div>
