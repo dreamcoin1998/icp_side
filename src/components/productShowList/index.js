@@ -82,7 +82,7 @@ class ProductShowList extends React.Component {
                 product_name: "亚朵酒店",
                 update_time: "2021-06-22 11:54"
             }],
-            total: 11
+            total: 10
         }
     }
 
@@ -114,9 +114,7 @@ class ProductShowList extends React.Component {
         for (let index = 0; index < rowList.length; index++) {
             var RouterProductCardListCols = rowList[index].map((product) => (
                 <Col span={4}>
-                    <BrowserRouter>
-                        <RouterProductCard data={ product } />                        
-                    </BrowserRouter>
+                    <RouterProductCard data={ product } />                        
                 </Col>
             ))
             RouterProductCardListRows.push(

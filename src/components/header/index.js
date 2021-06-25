@@ -39,27 +39,21 @@ class UserModule extends React.Component {
     render() {
         if (this.state.userinfo) {
             return (
-                <BrowserRouter>
-                    <Link to="/produce/user/">
-                        <Space>
-                            <AvatarImage src={this.state.userinfo.avatarUrl}></AvatarImage>
-                            {this.state.userinfo.username}
-                        </Space>
-                    </Link>
-                </BrowserRouter>
+                <Link to="/produce/user/">
+                    <Space>
+                        <AvatarImage src={this.state.userinfo.avatarUrl}></AvatarImage>
+                        {this.state.userinfo.username}
+                    </Space>
+                </Link>
             );
         } else {
             return (
                 <Space>
                     <Button type="text">
-                        <BrowserRouter>
-                            <Link to="/user/login/">登录</Link>
-                        </BrowserRouter>
+                        <Link to="/user/login/">登录</Link>
                     </Button>
                     <Button type="text">
-                        <BrowserRouter>
-                            <Link to="/user/register/">注册</Link>
-                        </BrowserRouter>
+                        <Link to="/user/register/">注册</Link>
                     </Button>
                 </Space>
             );
@@ -112,18 +106,14 @@ class TopBar extends React.Component {
                     {/* logo */}
                     <Col xxl={3}></Col>
                     <Col span={4}>
-                        <BrowserRouter>
-                            <Link to="/">
-                                <img style={{width: "123px"}} className="background-image" src={logo}></img>
-                            </Link>
-                        </BrowserRouter>
+                        <Link to="/">
+                            <img style={{width: "123px"}} className="background-image" src={logo}></img>
+                        </Link>
                     </Col>
                     <Col xxl={0} span={3}></Col>
                     {/* 搜索栏 */}
                     <Col className="search-shape-position" span={10}>
-                        <BrowserRouter>
-                            <RouterSearchProduct />
-                        </BrowserRouter>
+                        <RouterSearchProduct />
                     </Col>
                     <Col xxl={2} span={4}></Col>
                     {/* 用户登录注册交互 */}

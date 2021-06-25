@@ -6,9 +6,6 @@ import { ProductShowList } from '../../components/productShowList/index.js'
 import { FooterArea } from '../../components/footerArea/index.js';
 
 
-const { Header, Footer, Sider, Content } = Layout;
-
-
 class IndexPage extends React.Component {
     render() {
         return (
