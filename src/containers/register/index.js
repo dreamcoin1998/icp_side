@@ -7,6 +7,7 @@ import { ProtocolButton } from '../../components/protocolButton/index.js';
 import './style.css'
 import { withRouter } from 'react-router-dom'
 import request from '../../../utils/request.js';
+import { CodeInput } from '../../components/codeInput/index.js';
 
 
 const { Content } = Layout;
@@ -81,21 +82,21 @@ class InputNodeList extends React.Component {
                         rules={inputItem.rules}
                         dependencies={inputItem.dependencies || []}
                     >
-                        { function() {
+                        { function(formKey) {
                             if (inputItem.type === "password") {
                                 return (
                                     <Input.Password />
                                 );
                             } else if (inputItem.type === "search") {
                                 return (
-                                    <Input.Search enterButton="获取验证码" />
+                                    <CodeInput formKey={formKey} />
                                 );
                             } else {
                                 return (
                                     <Input />
                                 );
                             }
-                        }()}
+                        }(this.props.formKey)}
                     </Form.Item>
                 ))}
                 <Form.Item 

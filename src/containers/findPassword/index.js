@@ -6,6 +6,7 @@ import { DataInputArea } from '../../components/dataInputArea';
 // import './style.css'
 import request from '../../../utils/request.js';
 import { withRouter } from 'react-router-dom'
+import { CodeInput } from '../../components/codeInput/index.js';
 
 
 const { Content } = Layout;
@@ -78,21 +79,21 @@ class InputNodeList extends React.Component {
                         rules={inputItem.rules}
                         dependencies={inputItem.dependencies || []}
                     >
-                        { function() {
+                        { function(formKey) {
                             if (inputItem.type === "password") {
                                 return (
                                     <Input.Password />
                                 );
                             } else if (inputItem.type === "search") {
                                 return (
-                                    <Input.Search enterButton="获取验证码" />
+                                    <CodeInput formKey={formKey} />
                                 );
                             } else {
                                 return (
                                     <Input />
                                 );
                             }
-                        }()}
+                        }(this.props.formKey)}
                     </Form.Item>
                 ))}
     
