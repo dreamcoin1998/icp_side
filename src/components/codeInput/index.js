@@ -73,7 +73,7 @@ export class CodeInput extends React.Component {
     render() {
 
         return (
-            <Input.Search enterButton={this.state.enterButtonText} onSearch={this.handleClick.bind(this)} />
+            <Input.Search placeholder={this.props.placeholder} enterButton={this.state.enterButtonText} onSearch={this.handleClick.bind(this)} />
         );
     }
 }

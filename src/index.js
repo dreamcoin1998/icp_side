@@ -9,6 +9,7 @@ import { Register } from './containers/register';
 import { Login } from './containers/login';
 import { BindContactDetail } from './containers/bindContactDetail';
 import { FindPassword } from './containers/findPassword';
+import { ReportProduct } from './containers/reportProduct'; 
 import zhCN from 'antd/lib/locale/zh_CN';
 import 'antd/dist/antd.less';
 
@@ -26,7 +27,7 @@ class App extends React.Component {
           {/* <Route path="/product/detail/:id"></Route> */}
           <Route path="/produce/user/" component={MyReportProduct}></Route>
           <Route exact path="/product/search/" component={ProductSearch}></Route>
-          {/* <Route path="/product/report/"></Route> */}
+          <Route path="/product/report/" component={ReportProduct}></Route>
           {/* 用户模块 */}
           <Route path="/user/register/" component={Register}></Route>
           <Route path="/user/login/" component={Login}></Route>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FooterArea } from '../../components/footerArea/index.js';
-import { Layout, Button, Input, Form, notification,Menu } from 'antd';
+import { Layout, Button, Input, Form, notification, InputNumber, Select } from 'antd';
 import { TopBar } from '../../components/header';
 import { DataInputArea } from '../../components/dataInputArea';
 import { withRouter } from 'react-router-dom'
@@ -8,8 +8,6 @@ import { withRouter } from 'react-router-dom'
 import request from '../../../utils/request.js';
 import { CodeInput } from '../../components/codeInput/index.js';
 
-
-const { Content } = Layout;
 
 
 class InputNodeList extends React.Component {
@@ -26,26 +24,20 @@ class InputNodeList extends React.Component {
     handleFinish(values) {
         var params;
         var registerResponse;
-        if (this.props.formKey === "phone") {
-            const { phone, password } = values;
-            params = {
-                phone: phone,
-                password: password,
-            }
-            // 调用登录接口
-            registerResponse = request('post', '/v1.0/auth/login/phone', params);
-        } else {
-            const { email, password } = values;
-            params = {
-                email: email,
-                password: password,
-            }
-            registerResponse = request('post', '/v1.0/auth/login/email', params);
+        const { product_name, product_detail, price, inventory, product_type_id } = values;
+        params = {
+            product_name: product_name,
+            product_detail: product_detail,
+            price: price,
+            inventory: inventory,
+            product_type_id: product_type_id
         }
+        // 调用发布接口
+        registerResponse = request('post', '/v1.0/products/create/', params);
         if (registerResponse.data.code === 0) {
             notification.success({
                 duration: 3,
-                message: "登录成功",
+                message: "发布成功",
                 placement: "bottomRight",
                 description: "3秒后自动跳转至首页",
                 onClose: this.linkToIndex.bind(this)
@@ -53,7 +45,7 @@ class InputNodeList extends React.Component {
         } else {
             notification.error({
                 duration: 3,
-                message: "登录失败",
+                message: "发布失败",
                 placement: "bottomRight",
                 description: "请信息填写和网络情况",
             })
@@ -65,6 +57,7 @@ class InputNodeList extends React.Component {
     }
 
     render() {
+
         return (
             <Form
                 name={this.props.formKey}
@@ -90,6 +83,14 @@ class InputNodeList extends React.Component {
                                 return (
                                     <CodeInput placeholder={inputItem.placeholder} formKey={formKey} />
                                 );
+                            } else if (inputItem.type === "number") {
+                                return (
+                                    <InputNumber min={0} max={999999999999} defaultValue={0} />
+                                );
+                            } else if (inputItem.type === "textArea") {
+                                return (
+                                    <Input.TextArea placeholder={inputItem.placeholder} rows={8} showCount={true} maxLength={500}/>
+                                );
                             } else {
                                 return (
                                     <Input placeholder={inputItem.placeholder} />
@@ -98,23 +99,11 @@ class InputNodeList extends React.Component {
                         }(this.props.formKey)}
                     </Form.Item>
                 ))}
-                <Form.Item 
-                    // name="agreement"
-                    valuePropName="checked"
-                    wrapperCol={{ offset: 8, span: 16 }}
-                    rules={[
-                        {
-                            validator: (_, value) =>
-                            value ? Promise.resolve() : Promise.reject(new Error('同意方可注册使用')),
-                        },
-                    ]}
-                >
-                    <Button onClick={this.linkToResetPasswd.bind(this)}>忘记密码了？找回密码</Button>
-                </Form.Item>
+                
     
                 <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
                     <Button type="primary" htmlType="submit">
-                        提交登录
+                        提交发布
                     </Button>
                 </Form.Item>
             </Form>
@@ -123,43 +112,46 @@ class InputNodeList extends React.Component {
 }
 
 
-class Login extends React.Component {
+export class ReportProduct extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            inputListPhone: [{
-                label:  "手机号码：",
-                placeholder: "请输入手机号码",
-                name: "phone",
-                rules: [{ required: true, message: "手机号码输入错误", len: 11}],
+            inputList: [{
+                label:  "产品名称：",
+                placeholder: "请输入产品名称",
+                name: "product_name",
+                rules: [{ required: true, message: "请输入产品名称"}],
             },{
-                label: "密码",
-                placeholder: "请输入密码",
-                name: "password",
-                type: "password",
-                rules: [{ required: true, message: "请输入密码" }],
-            }],
-            inputListEmail: [{
-                label:  "邮箱：",
-                placeholder: "请输入邮箱",
-                name: "email",
-                rules: [{ required: true, message: "邮箱输入错误", pattern:  /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/}],
+                label: "产品类型",
+                placeholder: "请输入产品类型",
+                name: "product_type",
+                rules: [{ required: true, message: "请输入产品类型" }],
             },{
-                label: "密码",
-                placeholder: "请输入密码",
-                name: "password",
-                type: "password",
-                rules: [{ required: true, message: "请输入密码" }],
+                label:  "价格：",
+                placeholder: "请输入价格",
+                name: "price",
+                type: "number",
+                rules: [{ required: true, message: "请输入价格"}],
+            },{
+                label: "库存",
+                placeholder: "请输入库存",
+                type: "number",
+                name: "inventory",
+                rules: [{ required: true, message: "请输入库存" }],
+            },{
+                label: "产品详情",
+                placeholder: "请输入产品详情(限500字)",
+                name: "product_detail",
+                type: "textArea",
+                rules: [{ required: true, message: "请输入产品详情", max: 500 }],
             }],
-            menuKey: "phone"
         }
     }
 
-    handleClick(e) {
-        this.setState({
-            menuKey: e.key
-        })
+    componentDidMount() {
+        // 调用产品类型接口
+
     }
 
     render() {
@@ -167,40 +159,21 @@ class Login extends React.Component {
         const RouterInputNodeList = withRouter(InputNodeList);
 
         const MenuList = (
-            <>
-                <Menu 
-                    selectedKeys={[this.state.menuKey]} 
-                    mode="horizontal" onClick={this.handleClick.bind(this)} 
-                    style={{  margin: "0 auto", marginBottom: "1.5em", display: "table" }}
-                >
-                    <Menu.Item key="phone">
-                        通过手机号登录
-                        {/* <InputNodeList formKey="phone" inputList={this.state.inputListPhone} /> */}
-                    </Menu.Item>
-                    <Menu.Item key="email">
-                        通过邮箱登录
-                        {/* <InputNodeList formKey="email" inputList={this.state.inputListEmail} /> */}
-                    </Menu.Item>
-                </Menu>
-                <RouterInputNodeList formKey={this.state.menuKey} inputList={this.state.menuKey === "phone" ? this.state.inputListPhone : this.state.inputListEmail} />
-            </>
-            
-
+            <RouterInputNodeList 
+                formKey="product_detail_report" 
+                inputList={this.state.inputList} 
+            />
         );
 
         return (
             <Layout>
                 <TopBar></TopBar>
                     <DataInputArea
-                        title="用户登录"
+                        title="发布您的产品"
                         reactNodes={MenuList}
                     />
                 <FooterArea></FooterArea>
             </Layout>
         );
     }
-}
-
-export {
-    Login
 }
