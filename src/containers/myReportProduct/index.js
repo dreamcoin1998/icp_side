@@ -7,8 +7,7 @@ import { TopBar } from '../../components/header';
 
 class MyReportProduct extends React.Component {
 
-    linkToIndex() {
-        console.log()
+    linkToLoginPage() {
         this.props.history.push("/user/login/");
     }
 
@@ -21,7 +20,7 @@ class MyReportProduct extends React.Component {
                 message: "当前未登录或登录已过期",
                 placement: "topRight",
                 description: "3秒后自动跳转至登录页",
-                onClose: this.linkToIndex.bind(this)
+                onClose: this.linkToLoginPage.bind(this)
             })
         }
     }

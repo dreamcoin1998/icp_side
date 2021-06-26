@@ -1,0 +1,19 @@
+.content-class {
+    background-color: #fff;
+    /* display: flex; */
+    /* flex-direction: column; */
+    margin: 3em auto !important;
+    width: 60%;
+    box-shadow: 0em 0em 1em rgb(196, 193, 193);
+    border-radius: 0.5em;
+}
+
+.pageHeader-class {
+    justify-content: center;
+}
+
+.text-class {
+    padding: 1.2em;
+    font-size: 20px;
+    font-weight: 700;
+}

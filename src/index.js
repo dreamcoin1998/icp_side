@@ -5,6 +5,10 @@ import {IndexPage} from './containers/index/index';
 import { ProductSearch } from './containers/productSearch';
 import { MyReportProduct } from './containers/myReportProduct';
 import { NotFoundPage } from './containers/notFoundPage';
+import { Register } from './containers/register';
+import { Login } from './containers/login';
+import { BindContactDetail } from './containers/bindContactDetail';
+import { FindPassword } from './containers/findPassword';
 import zhCN from 'antd/lib/locale/zh_CN';
 import 'antd/dist/antd.less';
 
@@ -24,10 +28,10 @@ class App extends React.Component {
           <Route exact path="/product/search/" component={ProductSearch}></Route>
           {/* <Route path="/product/report/"></Route> */}
           {/* 用户模块 */}
-          {/* <Route path="/user/register/"></Route> */}
-          {/* <Route path="/user/login/"></Route> */}
-          {/* <Route path="/user/bind/"></Route> */}
-          {/* <Route path="/user/find_password/"></Route> */}
+          <Route path="/user/register/" component={Register}></Route>
+          <Route path="/user/login/" component={Login}></Route>
+          <Route path="/user/bind/" component={BindContactDetail}></Route>
+          <Route path="/user/find_password/" component={FindPassword}></Route>
           <Route exact path="/404/" component={NotFoundPage}></Route>
           <Route exact path="(/)" component={IndexPage}></Route>
           <Route component={RedirectAs404}></Route>
