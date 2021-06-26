@@ -24,13 +24,13 @@ class InputNodeList extends React.Component {
     handleFinish(values) {
         var params;
         var registerResponse;
-        const { product_name, product_detail, price, inventory, product_type_id } = values;
+        const { product_name, product_detail, price, inventory, product_type } = values;
         params = {
             product_name: product_name,
             product_detail: product_detail,
             price: price,
             inventory: inventory,
-            product_type_id: product_type_id
+            product_type_id: product_type
         }
         // 调用发布接口
         registerResponse = request('post', '/v1.0/products/create/', params);
@@ -73,6 +73,7 @@ class InputNodeList extends React.Component {
                         name={inputItem.name}
                         rules={inputItem.rules}
                         dependencies={inputItem.dependencies || []}
+                        initialValue={inputItem.type === "select" ? inputItem.select[0].id : undefined}
                     >
                         { function(formKey) {
                             if (inputItem.type === "password") {
@@ -90,6 +91,14 @@ class InputNodeList extends React.Component {
                             } else if (inputItem.type === "textArea") {
                                 return (
                                     <Input.TextArea placeholder={inputItem.placeholder} rows={8} showCount={true} maxLength={500}/>
+                                );
+                            } else if (inputItem.type === "select") {
+                                return (
+                                    <Select>
+                                        {((inputItem) => inputItem.select.map((selectItem) => (
+                                            <Select.Option value={selectItem.id}>{selectItem.type_name}</Select.Option>
+                                        )))(inputItem)}
+                                    </Select>
                                 );
                             } else {
                                 return (
@@ -126,6 +135,8 @@ export class ReportProduct extends React.Component {
                 label: "产品类型",
                 placeholder: "请输入产品类型",
                 name: "product_type",
+                type: "select",
+                select: [{ id: "1", type_name: "机场酒店" }, { id: "2", type_name: "影音视听"}],
                 rules: [{ required: true, message: "请输入产品类型" }],
             },{
                 label:  "价格：",
@@ -151,7 +162,12 @@ export class ReportProduct extends React.Component {
 
     componentDidMount() {
         // 调用产品类型接口
-
+        const inputList = this.state.inputList.slice();
+        const productTypes = request("get", "/v1.0/product_types/").data.product_type;
+        inputList[1].select = productTypes;
+        this.setState({
+            inputList: inputList
+        })
     }
 
     render() {
