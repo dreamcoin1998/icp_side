@@ -12,6 +12,7 @@ import { FindPassword } from './containers/findPassword';
 import { ReportProduct } from './containers/reportProduct'; 
 import zhCN from 'antd/lib/locale/zh_CN';
 import 'antd/dist/antd.less';
+import { ProductDetail } from './containers/productDetail';
 
 
 class App extends React.Component {
@@ -24,7 +25,7 @@ class App extends React.Component {
       <Router>
         <Switch>
           {/* 产品模块 */}
-          {/* <Route path="/product/detail/:id"></Route> */}
+          <Route path="/product/detail/:id" component={ProductDetail}></Route>
           <Route path="/produce/user/" component={MyReportProduct}></Route>
           <Route exact path="/product/search/" component={ProductSearch}></Route>
           <Route path="/product/report/" component={ReportProduct}></Route>

@@ -1,0 +1,42 @@
+.content {
+    background-color: #fff;
+    margin: 2.5em 3em 2em 3em;
+    border-radius: 0.25em;
+    box-shadow: 0em 0em 1em rgb(196, 193, 193);
+}
+
+.row {
+    margin: 1.5em 1em;
+}
+
+.title {
+    font-weight: 700;
+    border-bottom: #FFCAC6 2px solid;
+    background-color: #fff;
+}
+
+.title-no-border {
+    font-weight: 700;
+}
+
+.card-cover {
+    background-color: #FFFBF2;
+    border: #FACD91 1px solid;
+    border-radius: 0.25em;
+
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+}
+
+.username-text {
+    font-weight: 700;
+    text-align: center;
+    margin-top: 2.5em;
+}
+
+.image-border {
+    border: #D9001B 1px solid;
+}
