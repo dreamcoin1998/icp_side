@@ -14,7 +14,8 @@ class MyReportProduct extends React.Component {
     componentDidMount() {
         // 如果用户未登录
         const userInfo = localStorage.getItem("userInfo");
-        if (!userInfo || !document.cookie) {
+        const token = localStorage.getItem("token");
+        if (!userInfo || !token) {
             notification.error({
                 duration: 3,
                 message: "当前未登录或登录已过期",
@@ -27,7 +28,7 @@ class MyReportProduct extends React.Component {
 
     render() {
         const queryString = this.props.location.search;
-        const myReportProductApi = "/v1.0/my_products" + queryString;
+        const myReportProductApi = "/v1.0/product/user";
 
         return (
             <Layout>
@@ -35,6 +36,7 @@ class MyReportProduct extends React.Component {
                 <ProductShowList
                     title="我发布的产品信息"
                     apiUrl={myReportProductApi}
+                    queryString={queryString}
                     isPage={true}
                     isShowTotal={true}
                 />

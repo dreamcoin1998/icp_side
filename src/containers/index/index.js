@@ -12,11 +12,11 @@ class IndexPage extends React.Component {
             <div>
                 <Layout>
                     <TopBar></TopBar>
-                    {/* <ProductTypied></ProductTypied> */}
+                    <ProductTypied></ProductTypied>
                     <ProductShowList
                         title="为您推荐" 
                         subTitle="海量资源 实时推荐" 
-                        apiUrl="/v1.0/product/recommond"
+                        // apiUrl="/v1.0/product/recommond"
                         isPage={true}
                         isShowTotal={false}
                     />

@@ -26,40 +26,61 @@ class ProductTypied extends React.Component {
 
     getProductList(count, page) {
         // 调用产品列表接口
-        const productListResponse = request('get', '/v1.0/products?count=' + count + '&page=' + page);
-        const productListData = productListResponse.data;
-        const productListTotal = productListResponse.total;
-        return productListData, productListTotal;
+        return new Promise((resolve, reject) => {
+            request('get', '/v1.0/product/all?count=' + count + '&page=' + page)
+                .then(productListResponse => {
+                    const productListData = productListResponse.data;
+                    const productListTotal = productListResponse.total;
+                    resolve({productListData, productListTotal});
+                })
+        })
+        
+        
     }
 
     getProductTypied(key, count, page) {
          // 调用获取产品分类列表接口
-         const productTypiedResponse = request('get', "/v1.0/products/type?id=" + key + "&count=" + count + "&page=" + page)
-         const productTypiedData = productTypiedResponse.data
-         return productTypiedData
+         return new Promise((resolve, reject) => {
+            request('get', "/v1.0/product/type?id=" + key + "&count=" + count + "&page=" + page)
+                .then(productTypiedResponse => {
+                    const productTypiedData = productTypiedResponse.data
+                    const productTypiedTotal = productTypiedResponse.total;
+                    resolve({productTypiedData, productTypiedTotal})
+                })
+         })
     }
 
     componentDidMount() {
+        var productTypeData, productListData, productListTotal;
         // 调用获取产品类型列表接口
-        const productTypeResponse = request('get', '/v1.0/product_types/');
-        const productTypeData = productTypeResponse.data;
-        console.log(this.getProductList(4, 1))
-        const {productListData, productListTotal} = this.getProductList(4, 1);
-        this.setState({
-            productTypes: productTypeData,
-            products: productListData,
-            productListTotal: productListTotal
-
+        request('get', '/v1.0/product/types').then((productTypeResponse) => {
+            console.log("产品分类：", productTypeResponse.data)
+            productTypeData = productTypeResponse.data;
+            return this.getProductList(4, 1);
+        }).then((productListResp) => {
+            console.log(productListResp);
+            productListData = productListResp.productListData;
+            productListTotal = productListResp.productListTotal;
+            this.setState({
+                productTypes: productTypeData,
+                products: productListData,
+                productListTotal: productListTotal
+    
+            })
         })
     }
 
     handleSelect(data) {
         const { key } = data;
         if (key !== "productTypes") {
-            const productTypiedData = this.getProductTypied(key, 4, 1);
-            this.setState({
-                navigatorKey: key,
-                products: productTypiedData
+            this.getProductTypied(key, 4, 1).then(productTypiedResp => {
+                const productTypiedData = productTypiedResp.productTypiedData;
+                const productTypiedTotal = productTypiedResp.productTypiedTotal;
+                this.setState({
+                    navigatorKey: key,
+                    products: productTypiedData,
+                    productListTotal: productTypiedTotal
+                })
             })
         }
     }
@@ -67,17 +88,24 @@ class ProductTypied extends React.Component {
     handlePaginationChange(page, _) {
         // 用户点击全部产品信息
         if (this.state.navigatorKey === "productTypes") {
-            const {productListData, productListTotal} = this.getProductList(4, page);
-            this.setState({
-                products: productListData,
-                productListTotal: productListTotal
-    
-            });
+            this.getProductList(4, page).then((productListResp) => {
+                const productListData = productListResp.productListData;
+                const productListTotal = productListResp.productListTotal;
+                this.setState({
+                    products: productListData,
+                    productListTotal: productListTotal
+                })
+            })
         // 用户点击产品分类
         } else {
-            const productTypiedData = this.getProductTypied(this.state.navigatorKey, 4, page);
-            this.setState({
-                products: productTypiedData
+            this.getProductTypied(this.state.navigatorKey, 4, page).then(productTypiedResp => {
+                const productTypiedData = productTypiedResp.productTypiedData;
+                const productTypiedTotal = productTypiedResp.productTypiedTotal;
+                console.log(productTypiedData, productTypiedTotal);
+                this.setState({
+                    products: productTypiedData,
+                    productListTotal: productTypiedTotal
+                })
             })
         }
     }

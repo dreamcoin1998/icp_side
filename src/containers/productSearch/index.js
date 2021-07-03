@@ -11,7 +11,7 @@ class ProductSearch extends React.Component {
     render() {
         const queryString = this.props.location.search;
         const { product_name } = qs.parse(queryString, { ignoreQueryPrefix: true });
-        const searchApi = "/v1.0/products" + queryString;
+        const searchApi = "/v1.0/product/search" + queryString;
 
         return (
             <Layout>

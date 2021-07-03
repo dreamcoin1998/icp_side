@@ -6,7 +6,7 @@ import { message } from 'antd'
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 100000;
 // BaseUrl
-axios.defaults.baseURL = "http://icp.gaoblog.cn";
+axios.defaults.baseURL = "http://127.0.0.1:8000";
 
 
 /**
@@ -14,10 +14,12 @@ axios.defaults.baseURL = "http://icp.gaoblog.cn";
  */
 axios.interceptors.request.use(
     (config) => {
-        config.data = JSON.stringify(config.data);
-        config.headers = {
-            "Content-Type": "application/json",
-        };
+        // config.data = JSON.stringify(config.data);
+        if (localStorage.getItem("token")) {
+          config.headers = {
+            "Authorization": localStorage.getItem("token"),
+          };
+        }
         return config
     },
     (error) => {
@@ -34,7 +36,10 @@ axios.interceptors.response.use(
         if (response.data.code !== 0) {
             message.warning(response.data.msg);
         } else {
-            response;
+            if (response.headers.authorization) {
+              localStorage.setItem("token", response.headers.authorization)
+            }
+            return response;
         }
     },
     (error) => {
@@ -68,9 +73,9 @@ axios.interceptors.response.use(
  * @returns {Promise}
  */
 
-export function post(url, data) {
+export function post(url, data, config) {
     return new Promise((resolve, reject) => {
-      axios.post(url, data).then(
+      axios.post(url, data, config).then(
         (response) => {
           //关闭进度条
           resolve(response.data);
@@ -83,7 +88,7 @@ export function post(url, data) {
 }
 
 //统一接口处理，返回数据
-export default function (fecth, url, param) {
+export default function (fecth, url, param, config) {
     let _data = "";
     return new Promise((resolve, reject) => {
       switch (fecth) {
@@ -99,7 +104,7 @@ export default function (fecth, url, param) {
             });
           break;
         case "post":
-          post(url, param)
+          post(url, param, config)
             .then(function (response) {
               resolve(response);
             })

@@ -28,8 +28,9 @@ class UserModule extends React.Component {
 
     componentDidMount(){
         // 缓存中获取用户信息并设置this.state
-        const userInfo = localStorage.getItem("userInfo");
-        if (userInfo) {
+        const userInfoJson = localStorage.getItem("userInfo");
+        const userInfo = JSON.parse(userInfoJson);
+        if (userInfoJson !== "{}") {
             this.setState({
                 userInfo: userInfo
             });
@@ -37,12 +38,12 @@ class UserModule extends React.Component {
     }
 
     render() {
-        if (this.state.userinfo) {
+        if (this.state.userInfo) {
             return (
-                <Link to="/produce/user/">
+                <Link to="/produce/user?count=10&page=1">
                     <Space>
-                        <AvatarImage src={this.state.userinfo.avatarUrl}></AvatarImage>
-                        {this.state.userinfo.username}
+                        <AvatarImage src={this.state.userInfo.avatar}></AvatarImage>
+                        {this.state.userInfo.username}
                     </Space>
                 </Link>
             );
@@ -73,6 +74,7 @@ class SearchProduct extends React.Component {
         // 跳转到搜索页面
         if (value) {
             this.props.history.push("/product/search/?product_name=" + value + "&count=10&page=1")
+            window.location.reload();
         }
     }
 

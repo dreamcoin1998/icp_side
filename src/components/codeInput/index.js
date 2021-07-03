@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'antd';
+import { Input, notification } from 'antd';
 import request from '../../../utils/request';
 
 
@@ -14,20 +14,6 @@ export class CodeInput extends React.Component {
             enterButtonText: "获取验证码",
             time: 60,
             interval: null
-        }
-    }
-
-    requestCode(value) {
-        if (this.props.formKey === "phone") {
-            const params = {
-                phone: value
-            }
-            request("post", "/v1.0/auth/verification_request/phone", params)
-        } else {
-            const params = {
-                email: value
-            }
-            request("post", "/v1.0/auth/verification_request/email", params)
         }
     }
 
@@ -56,24 +42,39 @@ export class CodeInput extends React.Component {
      * @param {*} _ 
      */
     handleClick(value, _) {
+        // 邮箱格式
         var reg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
-        if (value.length === 11 && this.state.time === 60) {
-            this.setState({
-                interval: setInterval(this.changeButtonText.bind(this), 1000)
+        if (reg.test(value) || value.length === 11 && this.state.time === 60) {
+            const url = "/v1.0/auth/verification_request/" + this.props.formKey + "/";
+            const params = this.props.formKey === "phone" ? {phone: value} : {email: value};
+            request("post", url, params).then(response => {
+                if (response.code !== 0) {
+                    notification.error({
+                        duration: 3,
+                        message: "请求验证码失败",
+                        placement: "bottomRight",
+                        description: response.msg,
+                    })
+                } else {
+                    this.setState({
+                        interval: setInterval(this.changeButtonText.bind(this), 1000)
+                    })
+                }
             })
-            this.requestCode.bind(this, value)()
-        } else if (reg.test(value)){
-            this.setState({
-                interval: setInterval(this.changeButtonText.bind(this), 1000)
-            })
-            this.requestCode.bind(this, value)()
         }
     }
 
     render() {
-
+        const { onChange, value } = this.props;
+        const { getFieldProps, name } = this.props;
         return (
-            <Input.Search placeholder={this.props.placeholder} enterButton={this.state.enterButtonText} onSearch={this.handleClick.bind(this)} />
+            <Input.Search 
+                placeholder={this.props.placeholder} 
+                enterButton={this.state.enterButtonText} 
+                onSearch={this.handleClick.bind(this)} 
+                onChange={(e)=>onChange(e.target.value)}
+                value={value}
+            />
         );
     }
 }

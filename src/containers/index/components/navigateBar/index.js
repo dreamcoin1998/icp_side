@@ -14,7 +14,7 @@ class NavigateBar extends React.Component {
     render() {
         // 产品类型的Item列表数组
         const ProductTypeItem = this.props.productTypes.map((productType) => (
-            <Item key={String(productType.id)}>{productType.typeName}</Item>
+            <Item key={String(productType.id)}>{productType.type_name}</Item>
         ))
 
         return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, PageHeader, Row, Col, Pagination } from 'antd';
+import { Layout, PageHeader, Row, Col, Pagination, Empty } from 'antd';
 import './style.css'
 import { ProductCard } from '../productCard';
 import { withRouter, BrowserRouter } from 'react-router-dom';
@@ -21,88 +21,34 @@ class ProductShowList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 1,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 2,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 3,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 4,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 5,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 6,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 7,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 8,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 9,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            },{
-                images: ["https://cdn.xiangshuheika.com/static/xs_oak/spu/atour.png"],
-                id: 10,
-                price: 4000.00,
-                product_name: "亚朵酒店",
-                update_time: "2021-06-22 11:54"
-            }],
+            products: [],
             total: 10
         }
     }
 
-    // componentDidMount() {
-    //     // 获取产品推荐列表 接口联调取消注释
-    //     const productRecommResponse = request('get', this.props.apiUrl);
-    //     const productRecommListData = productRecommResponse.data;
-    //     const productRecommList = productRecommListData.products;
-    //     const productRecommListTotal = productRecommListData.total;
-    //     this.setState({
-    //         products: productRecommList,
-    //         total: productRecommListTotal
-    //     })
-    // }
+    componentDidMount() {
+        const url = this.props.apiUrl + this.props.queryString;
+        if (this.props.apiUrl) {
+            request('get', url).then(productsResponse => {
+                const productsData = productsResponse.data;
+                const productsTotal = productsResponse.total;
+                this.setState({
+                    products: productsData,
+                    total: productsTotal
+                })
+            })
+        }
+    }
 
     /**
      * ProductCard组件规范显示
      * @returns 
      */
     formatProductCard(products) {
+        console.log("运行", products.length)
+        if (products.length === 0) {
+            return <Empty />
+        }
         const RouterProductCard = withRouter(ProductCard);
         var RouterProductCardListRows = [];
         var rowList = [];
@@ -113,12 +59,12 @@ class ProductShowList extends React.Component {
         console.log(rowList)
         for (let index = 0; index < rowList.length; index++) {
             var RouterProductCardListCols = rowList[index].map((product) => (
-                <Col span={4}>
+                <Col key={product.id + ""} span={4}>
                     <RouterProductCard data={ product } />                        
                 </Col>
             ))
             RouterProductCardListRows.push(
-                <Row 
+                <Row key={index + ""}
                     style={index == rowList.length - 1 ? {} : {paddingBottom: "1.4em"}} 
                     justify="space-around" 
                     wrap={true}
@@ -131,13 +77,13 @@ class ProductShowList extends React.Component {
     }
 
     paginationChange(page, _) {
-        const productRecommResponse = request('get', this.props.apiUrl + "?count=10&page=" + page);
-        const productRecommListData = productRecommResponse.data;
-        const productRecommList = productRecommListData.products;
-        const productRecommListTotal = productRecommListData.total;
-        this.setState({
-            products: productRecommList,
-            total: productRecommListTotal
+        request('get', this.props.apiUrl + "?count=10&page=" + page).then(response => {
+            const productListData = response.data;
+            const productListTotal = response.total;
+            this.setState({
+                products: productListData,
+                total: productListTotal
+            })
         })
     }
 
@@ -151,11 +97,12 @@ class ProductShowList extends React.Component {
             return (
                 <Pagination 
                     className="pagenation-padding" 
-                    defaultCurrent={1} 
+                    defaultCurrent={1}
                     total={this.state.total} 
                     defaultPageSize={this.props.pageSize || 10 }
                     onChange={this.paginationChange.bind(this)}
                     showTotal={total => this.props.isShowTotal && `总共 ${total} 条结果`}
+                    showSizeChanger={false}
                 />
             );
         }

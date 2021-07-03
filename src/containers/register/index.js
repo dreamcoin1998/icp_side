@@ -1,6 +1,6 @@
 import React from 'react';
 import { FooterArea } from '../../components/footerArea/index.js';
-import { Layout, Row, Col, Button, Input, Form, Checkbox, notification,Menu } from 'antd';
+import { Layout, Upload, Col, Button, Input, Form, Checkbox, notification,Menu } from 'antd';
 import { TopBar } from '../../components/header';
 import { DataInputArea } from '../../components/dataInputArea';
 import { ProtocolButton } from '../../components/protocolButton/index.js';
@@ -8,6 +8,7 @@ import './style.css'
 import { withRouter } from 'react-router-dom'
 import request from '../../../utils/request.js';
 import { CodeInput } from '../../components/codeInput/index.js';
+import { UploadOutlined } from '@ant-design/icons'
 
 
 const { Content } = Layout;
@@ -15,50 +16,65 @@ const { Content } = Layout;
 
 class InputNodeList extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            imagePath: null
+        }
+    }
+
+    selectImage(file, fileList) {
+        this.setState({
+            imagePath: file
+        })
+        return false
+    }
+
     linkToIndex() {
-        this.props.history.push("/user/login/");
+        this.props.history.push("/");
     }
 
     handleFinish(values) {
-        var params;
-        console.log(values);
-        if (this.props.formKey == "phone") {
-            const { username, password, code, phone } = values;
-            params = {
-                username: username,
-                password: password,
-                phoneOrEmail: phone,
-                code: code,
-                type: "phone"
-            }
+        const { username, password, code, phone, avator, introduction, email } = values;
+        const { file } = avator;
+        let params = new FormData();
+        params.append("file", file);
+        params.append("username", username);
+        params.append("password", password);
+        if (this.props.formKey=="phone"){
+            params.append("phoneOrEmail", phone);
         } else {
-            const { username, password, code, email } = values;
-            params = {
-                username: username,
-                password: password,
-                phoneOrEmail: email,
-                code: code,
-                type: "phone"
-            }
+            params.append("phoneOrEmail", email);
+        }
+        params.append("code", code);
+        params.append("introduction", introduction);
+        params.append("type", this.props.formKey);
+        var config = {
+            headers: {
+                
+            },
+            transformRequest: [data => data]
         }
         // 调用注册接口
-        const registerResponse = request('post', '/v1.0/auth/register/', params);
-        if (registerResponse.data.code === 0) {
-            notification.success({
-                duration: 3,
-                message: "注册成功",
-                placement: "bottomRight",
-                description: "3秒后自动跳转至首页",
-                onClose: this.linkToIndex.bind(this)
-            })
-        } else {
-            notification.error({
-                duration: 3,
-                message: "注册失败",
-                placement: "bottomRight",
-                description: "请信息填写和网络情况",
-            })
-        }
+        request('post', '/v1.0/auth/register/', params, config).then(registerResponse => {
+            if (registerResponse.code === 0) {
+                localStorage.setItem("userInfo", JSON.stringify(registerResponse.data));
+                notification.success({
+                    duration: 3,
+                    message: "注册成功",
+                    placement: "bottomRight",
+                    description: "3秒后自动跳转至首页",
+                    onClose: this.linkToIndex.bind(this)
+                })
+            } else {
+                notification.error({
+                    duration: 3,
+                    message: "注册失败",
+                    placement: "bottomRight",
+                    description: "请信息填写和网络情况",
+                })
+            }
+        })
     }
 
     handleFinishFailed(data) {
@@ -91,12 +107,23 @@ class InputNodeList extends React.Component {
                                 return (
                                     <CodeInput formKey={formKey} />
                                 );
+                            } else if (inputItem.type === "avatar") {
+                                return (
+                                    <Upload 
+                                        accept=".jpg,.png,.jpeg"
+                                        beforeUpload={this.selectImage.bind(this)}
+                                        listType="picture"
+                                        maxCount={1}
+                                    >
+                                        <Button icon={<UploadOutlined />}>点击上传</Button>
+                                    </Upload>
+                                );
                             } else {
                                 return (
                                     <Input />
                                 );
                             }
-                        }(this.props.formKey)}
+                        }.bind(this, this.props.formKey)()}
                     </Form.Item>
                 ))}
                 <Form.Item 
@@ -145,6 +172,11 @@ class Register extends React.Component {
                 name: "introduction",
                 rules: [{ required: false, max: 150 }],
             },{
+                label:  "头像：",
+                name: "avator",
+                rules: [{ required: true, message: "请选择头像"}],
+                type: "avatar"
+            },{
                 label:  "手机号码：",
                 placeholder: "请输入手机号码",
                 name: "phone",
@@ -192,6 +224,11 @@ class Register extends React.Component {
                 placeholder: "请输入用户相关介绍，限150字",
                 name: "introduction",
                 rules: [{ required: false, max: 150 }],
+            },{
+                label:  "头像：",
+                name: "avator",
+                rules: [{ required: true, message: "请选择头像"}],
+                type: "avatar"
             },{
                 label:  "邮箱：",
                 placeholder: "请输入邮箱",

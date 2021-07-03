@@ -26,38 +26,40 @@ class InputNodeList extends React.Component {
     handleFinish(values) {
         var params;
         var registerResponse;
+        const { phone, password, email } = values;
+        const url = this.props.formKey === "phone" ? "/v1.0/auth/login/phone/" : "/v1.0/auth/login/email/";
         if (this.props.formKey === "phone") {
-            const { phone, password } = values;
             params = {
                 phone: phone,
                 password: password,
             }
             // 调用登录接口
-            registerResponse = request('post', '/v1.0/auth/login/phone', params);
         } else {
-            const { email, password } = values;
             params = {
                 email: email,
                 password: password,
             }
-            registerResponse = request('post', '/v1.0/auth/login/email', params);
         }
-        if (registerResponse.data.code === 0) {
-            notification.success({
-                duration: 3,
-                message: "登录成功",
-                placement: "bottomRight",
-                description: "3秒后自动跳转至首页",
-                onClose: this.linkToIndex.bind(this)
-            })
-        } else {
-            notification.error({
-                duration: 3,
-                message: "登录失败",
-                placement: "bottomRight",
-                description: "请信息填写和网络情况",
-            })
-        }
+        request("post", url, params).then(registerResponse  => {
+            if (registerResponse.code === 0) {
+                // 存储用户信息
+                localStorage.setItem("userInfo", JSON.stringify(registerResponse.data))
+                notification.success({
+                    duration: 3,
+                    message: "登录成功",
+                    placement: "bottomRight",
+                    description: "3秒后自动跳转至首页",
+                    onClose: this.linkToIndex.bind(this)
+                })
+            } else {
+                notification.error({
+                    duration: 3,
+                    message: "登录失败",
+                    placement: "bottomRight",
+                    description: "请信息填写和网络情况",
+                })
+            }
+        })
     }
 
     handleFinishFailed(data) {

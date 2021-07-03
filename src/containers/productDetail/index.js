@@ -24,15 +24,23 @@ export class ProductDetail extends React.Component {
         super(props);
         this.state = {
             product: {
-                images: [
-                    "https://cdn.xiangshuheika.com/static/xs_oak/spu/airportviproom.png",
-                    "https://www.gaoblog.cn/about/info_files/hulianwang.jpg",
-                    "https://cdn.xiangshuheika.com/static/xs_oak/spu/airportviproom.png",
-                    "https://cdn.xiangshuheika.com/static/xs_oak/spu/airportviproom.png",
-                ]
+                
             },
             imageSelect: 0
         }
+    }
+
+    componentDidMount() {
+        const pathNameSplit = this.props.location.pathname.split("/");
+        const product_id = pathNameSplit[pathNameSplit.length-1]
+        console.log(this.props.location.pathname.split("/"))
+        const urlApi = "/v1.0/product/" + product_id;
+        request("get", urlApi).then(response => {
+            console.log(response.data);
+            this.setState({
+                product: response.data
+            })
+        })
     }
 
     handleClick(index) {
@@ -43,6 +51,11 @@ export class ProductDetail extends React.Component {
     }
 
     render() {
+
+        if(JSON.stringify(this.state.product) === "{}") {
+            return <></>
+        }
+        const formatedDate = new Date(this.state.product.update_time).format("yyyy-MM-dd hh:mm:ss");
 
         return (
             <Layout>
@@ -69,16 +82,16 @@ export class ProductDetail extends React.Component {
                         </Col>
                         <Col span={10} xxl={13} style={{justifyContent: "center"}}>
                             <Descriptions 
-                                title={<div className="title">厂家直供生态人工浮岛 生态种植浮床 水环境治理岛 水生植物浮板 荣文</div>}
+                                title={<div className="title">{this.state.product.product_name}</div>}
                                 column={2}
                                 labelStyle={{color: "#AAAAAA", marginLeft: "0.5em"}}
                                 contentStyle={{ fontWeight: "700" }}
                                 style={{backgroundColor: "#FFF8F8"}}
                             >
-                                <Descriptions.Item contentStyle={{color: "#D9001B"}} label="价格">￥4000.00 元</Descriptions.Item>
-                                <Descriptions.Item label="库存">不限</Descriptions.Item>
-                                <Descriptions.Item label="产品类型">美食餐饮</Descriptions.Item>
-                                <Descriptions.Item label="发布时间">2021-06-22 13:22</Descriptions.Item>
+                                <Descriptions.Item contentStyle={{color: "#D9001B"}} label="价格">{"￥" + this.state.product.price + "元"}</Descriptions.Item>
+                                <Descriptions.Item label="库存">{this.state.product.inventory}</Descriptions.Item>
+                                <Descriptions.Item label="产品类型">{this.state.product.product_type.type_name}</Descriptions.Item>
+                                <Descriptions.Item label="发布时间">{formatedDate}</Descriptions.Item>
                             </Descriptions>
                             <Descriptions 
                                 title={<div className="title-no-border">联系方式</div>}
@@ -87,8 +100,8 @@ export class ProductDetail extends React.Component {
                                 contentStyle={{ fontWeight: "700" }}
                                 style={{marginTop: "1em"}}
                             >
-                                <Descriptions.Item label="电子邮箱">1285338586@qq.com</Descriptions.Item>
-                                <Descriptions.Item label="手机号码">15259695263</Descriptions.Item>
+                                {this.state.product.user_info.email ? <Descriptions.Item label="电子邮箱">{this.state.product.user_info.email}</Descriptions.Item> : <></>}
+                                {this.state.product.user_info.phone ? <Descriptions.Item label="手机号码">{this.state.product.user_info.phone}</Descriptions.Item> : <></>}
                             </Descriptions>
                         </Col>
                         <Col span={5} offset={1} xxl={5}>
@@ -97,11 +110,11 @@ export class ProductDetail extends React.Component {
                             >
                                 <Meta
                                     className="card"
-                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" size="large" />}       
+                                    avatar={<Avatar src={this.state.product.user_info.avatar} size="large" />} 
                                 />
-                                <div className="username-text">廊坊荣文建材公司</div>
+                                <div className="username-text">{this.state.product.user_info.username}</div>
                                 <div style={{marginTop: "2em", textIndent: "2em"}}>
-                                    使用橡树定制化会员服务，包含星级酒店权益、休息室、京东e卡等，定向免费赠送给本行高端用户，从而提升银行口碑与核心用户忠诚度
+                                    {this.state.product.user_info.introduction}
                                 </div>
                             </Card>
                         </Col>
@@ -113,7 +126,7 @@ export class ProductDetail extends React.Component {
                         title="产品详情"
                     >
                         <div style={{textIndent: "2em"}}>
-                            橡树黑卡成立于2018年，是国内领先一站式付费会员制权益服务商，致力于付费会员这一新的智能商业模式的创新与演进，创始团队来自于腾讯、平安、苏宁、乐信等，在会员服务领域拥有丰富的行业积累与成功经验，并在多行业展开了多元和深入的合作。橡树黑卡秉承“让消费更有意义”理念，面向C端用户提供各类会员权益，从出行到生活全方位服务于客户。面向B端企业，深度整合供应链，结合平台用户特征，推出定制化付费会员体系，帮助企业提高用户价值,实现新业务创收。
+                            {this.state.product.product_detail}
                         </div>
                     </Card>
                 </Content>

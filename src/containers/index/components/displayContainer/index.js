@@ -15,7 +15,7 @@ class DisplayContainer extends React.Component {
 
         // 产品列表的Item列表数组
         const ProductsItem = this.props.products.map((product) => (
-            <Col span={5}>
+            <Col key={product.id + ""} span={5}>
                 <RouterProductCard data={ product } />
             </Col>
         ))
@@ -29,8 +29,9 @@ class DisplayContainer extends React.Component {
                     className="pagenation-padding" 
                     defaultCurrent={1} 
                     total={this.props.total} 
-                    defaultPageSize={4}
                     onChange={this.props.paginationChange}
+                    showSizeChanger={false}
+                    pageSize={4}
                 />
             </Content>
         );
