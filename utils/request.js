@@ -6,7 +6,7 @@ import { message } from 'antd'
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 100000;
 // BaseUrl
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = "http://127.0.0.1:9001";
 
 
 /**
