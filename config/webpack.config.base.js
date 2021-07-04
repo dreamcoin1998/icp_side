@@ -1,4 +1,7 @@
 // webpack.config.js
+/**
+ * @type {import('webpack').Configuration}
+ */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
@@ -7,31 +10,21 @@ const friendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 module.exports = {
   devtool: 'inline-source-map',
   mode: 'development',
-  entry: {
-    app: './src/index.js'
-  },
+  entry: path.resolve(__dirname, '../src/index.js'),
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: '[name].bundle.js',
     publicPath: '/'
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: '',
-      template: path.resolve(__dirname, './public/index.html'),
+      template: path.resolve(__dirname, '../public/index.html'),
       filename: 'index.html',
     }),
     new CleanWebpackPlugin(),
     new friendlyErrorsWebpackPlugin(),
   ],
-  devServer: {
-    historyApiFallback: true,
-    contentBase: path.join(__dirname, './dist'),
-    open: false,
-    hot: true,
-    quiet: true,
-    port: 8082,
-  },
   module: {
     rules: [
       // JavaScript

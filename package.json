@@ -33,9 +33,9 @@
     "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --progress --profile --color --config ./config/webpack.config.prod.js",
     "watch": "webpack --watch",
-    "start": "webpack serve",
+    "start": "webpack serve --config ./config/webpack.config.dev.js",
     "server": "node server.js"
   },
   "dependencies": {
