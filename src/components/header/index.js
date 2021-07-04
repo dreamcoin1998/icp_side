@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, BrowserRouter, withRouter } from 'react-router-dom';
-import { Layout, Row, Col, Input, Avatar, Space, Button } from 'antd';
+import { Layout, Row, Col, Input, Avatar, Space, Button, Dropdown, Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import './style.css'
 import logo from '../../../public/logo.png'
+import request from '../../../utils/request';
 
 
 const Header = Layout.Header;
@@ -17,12 +18,56 @@ function AvatarImage(props) {
     }
 }
 
+
+class UserAvatar extends React.Component {
+
+    state = {
+        visible: false,
+    };
+
+    handleVisibleChange = flag => {
+        this.setState({ visible: flag });
+    };
+    
+    render() {
+
+        const menu = (
+            <Menu>
+                <Menu.Item key="my_product">
+                    <Link to="/produce/user?count=10&page=1">
+                        我发布的产品
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="report_product">
+                    <Link to="/product/report/">
+                        发布产品
+                    </Link>
+                </Menu.Item>
+            </Menu>
+        );
+
+        return (
+            <Dropdown 
+                overlay={menu}
+                onVisibleChange={this.handleVisibleChange}
+                visible={this.state.visible}
+            >
+                <Space onClick={e => e.preventDefault()}>
+                    <AvatarImage src={this.props.userInfo.avatar}></AvatarImage>
+                    {this.props.userInfo.username}
+                </Space>
+            </Dropdown>
+        );
+    }
+}
+
+
 class UserModule extends React.Component {
     constructor(props) {
         super(props);
         // 临时参数
         this.state = {
-            userinfo: null
+            userInfo: null
         }
     }
 
@@ -40,12 +85,9 @@ class UserModule extends React.Component {
     render() {
         if (this.state.userInfo) {
             return (
-                <Link to="/produce/user?count=10&page=1">
-                    <Space>
-                        <AvatarImage src={this.state.userInfo.avatar}></AvatarImage>
-                        {this.state.userInfo.username}
-                    </Space>
-                </Link>
+                <>
+                    {<UserAvatar userInfo={this.state.userInfo} />}
+                </>
             );
         } else {
             return (
@@ -70,11 +112,27 @@ class SearchProduct extends React.Component {
         }
     }
 
+    detectProductName(productName) {
+        
+        return new Promise((resolve, reject) => {
+            request("post", "/v1.0/detect/sensitives/", {text: productName}).then(response => {
+                console.log(response.data);
+                if (response.code === 0) {
+                    const prodectedProductName = response.data.filted_text
+                    resolve(prodectedProductName);
+                }
+            })
+        })
+    }
+
     handleSearch(value, event) {
         // 跳转到搜索页面
         if (value) {
-            this.props.history.push("/product/search/?product_name=" + value + "&count=10&page=1")
-            window.location.reload();
+            console.log(value)
+            this.detectProductName(value).then(prodectedProductName => {
+                this.props.history.push("/product/search/?product_name=" + prodectedProductName + "&count=10&page=1")
+                window.location.reload();
+            })
         }
     }
 

@@ -21,6 +21,7 @@ class ProductSearch extends React.Component {
                     apiUrl={searchApi}
                     isPage={true}
                     isShowTotal={true}
+                    queryString={queryString}
                 />
                 <FooterArea></FooterArea>
             </Layout>

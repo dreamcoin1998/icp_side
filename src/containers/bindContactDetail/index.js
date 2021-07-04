@@ -22,41 +22,36 @@ class InputNodeList extends React.Component {
 
     handleFinish(values) {
         var params;
-        var registerResponse;
+        const apiUrl = '/v1.0/auth/verification/' + this.props.formKey + "/";
+        const { phone, password, code, email } = values;
+        params = {
+            code: code,
+            password: password
+        };
         if (this.props.formKey === "phone") {
-            const { phone, password, code } = values;
-            params = {
-                phone: phone,
-                code: code,
-                password: password,
-            }
+            params.phone = phone;
             // 调用登录接口
-            registerResponse = request('post', '/v1.0/auth/change_passswd_phone', params);
         } else {
-            const { email, password, code } = values;
-            params = {
-                email: email,
-                code: code,
-                password: password,
+            params.email = email;
+        }
+        request("post", apiUrl, params).then(response => {
+            if (response.code !== 0) {
+                notification.error({
+                    duration: 3,
+                    message: "绑定失败",
+                    placement: "bottomRight",
+                    description: "请信息填写和网络情况"
+                })
+            } else {
+                notification.success({
+                    duration: 3,
+                    message: "绑定成功",
+                    placement: "bottomRight",
+                    description: "3秒后自动跳转至首页",
+                    onClose: this.linkToIndex.bind(this)
+                })
             }
-            registerResponse = request('post', '/v1.0/auth/change_passswd_email', params);
-        }
-        if (registerResponse.data.code === 0) {
-            notification.success({
-                duration: 3,
-                message: "绑定成功",
-                placement: "bottomRight",
-                description: "3秒后自动跳转至首页",
-                onClose: this.linkToIndex.bind(this)
-            })
-        } else {
-            notification.error({
-                duration: 3,
-                message: "绑定失败",
-                placement: "bottomRight",
-                description: "请信息填写和网络情况"
-            })
-        }
+        })
     }
 
     handleFinishFailed(data) {

@@ -21,41 +21,36 @@ class InputNodeList extends React.Component {
 
     handleFinish(values) {
         var params;
-        var registerResponse;
+        const apiUrl = '/v1.0/auth/change_passswd_' + this.props.formKey + "/";
+        const { phone, password, code, email } = values;
+        params = {
+            code: code,
+            password: password
+        };
         if (this.props.formKey === "phone") {
-            const { phone, password, code } = values;
-            params = {
-                phone: phone,
-                password: password,
-                code,
-            }
+            params.phone = phone;
             // 调用登录接口
-            registerResponse = request('post', '/v1.0/auth/change_passswd_phone', params);
         } else {
-            const { email, password, code } = values;
-            params = {
-                email: email,
-                password: password,
-                code,
+            params.email = email;
+        }
+        request("post", apiUrl, params).then(response => {
+            if (response.code !== 0) {
+                notification.error({
+                    duration: 3,
+                    message: "绑定失败",
+                    placement: "bottomRight",
+                    description: "请信息填写和网络情况"
+                })
+            } else {
+                notification.success({
+                    duration: 3,
+                    message: "绑定成功",
+                    placement: "bottomRight",
+                    description: "3秒后自动跳转至登录页",
+                    onClose: this.linkLoginPage.bind(this)
+                })
             }
-            registerResponse = request('post', '/v1.0/auth/change_passswd_email', params);
-        }
-        if (registerResponse.data.code === 0) {
-            notification.success({
-                duration: 3,
-                message: "更改密码成功",
-                placement: "bottomRight",
-                description: "3秒后自动跳转至登录页",
-                onClose: this.linkLoginPage.bind(this)
-            })
-        } else {
-            notification.error({
-                duration: 3,
-                message: "登录失败",
-                placement: "bottomRight",
-                description: "请信息填写和网络情况",
-            })
-        }
+        })
     }
 
     handleFinishFailed(data) {
@@ -120,6 +115,11 @@ class FindPassword extends React.Component {
                 type: "search",
                 rules: [{ required: true, message: "手机号码输入错误", len: 11}],
             },{
+                label: "验证码",
+                placeholder: "请输入验证码",
+                name: "code",
+                rules: [{ required: true, message: "请输入验证码" }],
+            },{
                 label: "密码",
                 placeholder: "请输入密码",
                 name: "password",
@@ -152,6 +152,11 @@ class FindPassword extends React.Component {
                 name: "email",
                 type: "search",
                 rules: [{ required: true, message: "邮箱输入错误", pattern:  /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/}],
+            },{
+                label: "验证码",
+                placeholder: "请输入验证码",
+                name: "code",
+                rules: [{ required: true, message: "请输入验证码" }],
             },{
                 label: "密码",
                 placeholder: "请输入密码",

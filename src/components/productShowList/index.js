@@ -28,6 +28,7 @@ class ProductShowList extends React.Component {
 
     componentDidMount() {
         const url = this.props.apiUrl + this.props.queryString;
+        console.log(url)
         if (this.props.apiUrl) {
             request('get', url).then(productsResponse => {
                 const productsData = productsResponse.data;

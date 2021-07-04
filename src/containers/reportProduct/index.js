@@ -1,17 +1,24 @@
 import React from 'react';
 import { FooterArea } from '../../components/footerArea/index.js';
-import { Layout, Button, Input, Form, notification, InputNumber, Select } from 'antd';
+import { Layout, Button, Input, Form, notification, InputNumber, Select, Upload } from 'antd';
 import { TopBar } from '../../components/header';
 import { DataInputArea } from '../../components/dataInputArea';
 import { withRouter } from 'react-router-dom'
 // import './style.css'
 import request from '../../../utils/request.js';
+import { UploadOutlined } from '@ant-design/icons'
 import { CodeInput } from '../../components/codeInput/index.js';
 
 
 
 class InputNodeList extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            imagePath: null
+        }
+    }
     
     linkToIndex() {
         this.props.history.push("/");
@@ -22,38 +29,52 @@ class InputNodeList extends React.Component {
     }
 
     handleFinish(values) {
-        var params;
-        var registerResponse;
-        const { product_name, product_detail, price, inventory, product_type } = values;
-        params = {
-            product_name: product_name,
-            product_detail: product_detail,
-            price: price,
-            inventory: inventory,
-            product_type_id: product_type
+        const { product_name, product_detail, price, inventory, product_type, avatar } = values;
+        const { file } = avatar;
+        let params = new FormData();
+        params.append("product_name", product_name);
+        params.append("product_detail", product_detail);
+        params.append("product_type_id", product_type);
+        params.append("price", price);
+        params.append("inventory", inventory);
+        params.append("file", file);
+        var config = {
+            headers: {
+                
+            },
+            transformRequest: [data => data]
         }
         // 调用发布接口
-        registerResponse = request('post', '/v1.0/products/create/', params);
-        if (registerResponse.data.code === 0) {
-            notification.success({
-                duration: 3,
-                message: "发布成功",
-                placement: "bottomRight",
-                description: "3秒后自动跳转至首页",
-                onClose: this.linkToIndex.bind(this)
-            })
-        } else {
-            notification.error({
-                duration: 3,
-                message: "发布失败",
-                placement: "bottomRight",
-                description: "请信息填写和网络情况",
-            })
-        }
+        request('post', '/v1.0/product/create/', params, config).then(response => {
+            if (response.code === 0) {
+                notification.success({
+                    duration: 3,
+                    message: "发布成功",
+                    placement: "bottomRight",
+                    description: "3秒后自动跳转至首页",
+                    onClose: this.linkToIndex.bind(this)
+                })
+            } else {
+                notification.error({
+                    duration: 3,
+                    message: "发布失败",
+                    placement: "bottomRight",
+                    description: "请信息填写和网络情况",
+                })
+            }
+        })
     }
 
     handleFinishFailed(data) {
         console.log("未通过", data);
+    }
+
+    selectImage(file, fileList) {
+        console.log(file, fileList)
+        this.setState({
+            imagePath: file
+        })
+        return false
     }
 
     render() {
@@ -73,7 +94,7 @@ class InputNodeList extends React.Component {
                         name={inputItem.name}
                         rules={inputItem.rules}
                         dependencies={inputItem.dependencies || []}
-                        initialValue={inputItem.type === "select" ? inputItem.select[0].id : undefined}
+                        initialValue={inputItem.type === "select" ? inputItem.select[0].id : null}
                     >
                         { function(formKey) {
                             if (inputItem.type === "password") {
@@ -100,12 +121,23 @@ class InputNodeList extends React.Component {
                                         )))(inputItem)}
                                     </Select>
                                 );
+                            } else if (inputItem.type === "avatar") {
+                                return (
+                                    <Upload 
+                                        accept=".jpg,.png,.jpeg"
+                                        beforeUpload={this.selectImage.bind(this)}
+                                        listType="picture"
+                                        maxCount={1}
+                                    >
+                                        <Button icon={<UploadOutlined />}>点击上传</Button>
+                                    </Upload>
+                                );
                             } else {
                                 return (
                                     <Input placeholder={inputItem.placeholder} />
                                 );
                             }
-                        }(this.props.formKey)}
+                        }.bind(this, this.props.formKey)()}
                     </Form.Item>
                 ))}
                 
@@ -139,6 +171,11 @@ export class ReportProduct extends React.Component {
                 select: [{ id: "1", type_name: "机场酒店" }, { id: "2", type_name: "影音视听"}],
                 rules: [{ required: true, message: "请输入产品类型" }],
             },{
+                label:  "产品图片：",
+                name: "avatar",
+                rules: [{ required: true, message: "请选择头像"}],
+                type: "avatar"
+            },{
                 label:  "价格：",
                 placeholder: "请输入价格",
                 name: "price",
@@ -163,10 +200,12 @@ export class ReportProduct extends React.Component {
     componentDidMount() {
         // 调用产品类型接口
         const inputList = this.state.inputList.slice();
-        const productTypes = request("get", "/v1.0/product_types/").data.product_type;
-        inputList[1].select = productTypes;
-        this.setState({
-            inputList: inputList
+        request("get", '/v1.0/product/types').then(res => {
+            const productTypes = res.data;
+            inputList[1].select = productTypes;
+            this.setState({
+                inputList: inputList
+            })
         })
     }
 
