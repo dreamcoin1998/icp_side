@@ -38,7 +38,7 @@
   "scripts": {
     "build": "webpack --progress --profile --color --config ./config/webpack.config.prod.js",
     "watch": "webpack --watch",
-    "start": "webpack serve --config ./config/webpack.config.dev.js",
+    "start": "webpack serve --hot --config ./config/webpack.config.dev.js",
     "server": "node server.js"
   },
   "dependencies": {

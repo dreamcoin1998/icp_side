@@ -35,7 +35,7 @@ class FooterArea extends React.Component {
                     <Col xxl={3}></Col>
                 </Row>
                 <div className="footer-bottom-text">
-                    <a style={{ color: "#02A7F0" }} href="http://beian.miit.gov.cn/">粤ICP备20063673号</a>
+                    <a style={{ color: "#02A7F0" }} href="http://beian.miit.gov.cn/">粤ICP备18120172号-3</a>
                     &nbsp;Copyright © 2018 深圳市橡树黑卡网络科技有限公司
                 </div>
             </Footer>

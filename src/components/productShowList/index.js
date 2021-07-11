@@ -27,7 +27,12 @@ class ProductShowList extends React.Component {
     }
 
     componentDidMount() {
-        const url = this.props.apiUrl + this.props.queryString;
+        var url;
+        if (this.props.queryString) {
+            url = this.props.apiUrl + this.props.queryString;
+        } else {
+            url = this.props.apiUrl;
+        }
         console.log(url)
         if (this.props.apiUrl) {
             request('get', url).then(productsResponse => {

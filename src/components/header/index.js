@@ -175,7 +175,12 @@ class TopBar extends React.Component {
                     <Col className="search-shape-position" span={10}>
                         <RouterSearchProduct />
                     </Col>
-                    <Col xxl={2} span={4}></Col>
+                    <Col xxl={2} span={2}></Col>
+                    <Col xxl={2} span={2}>
+                        <Button type="text">
+                            <Link to="/product/report/">免费发布</Link>
+                        </Button>
+                    </Col>
                     {/* 用户登录注册交互 */}
                     <Col span={3}>
                         <UserModule></UserModule>
